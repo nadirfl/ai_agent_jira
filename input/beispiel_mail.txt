@@ -1,0 +1,11 @@
+Betreff: Fehlermeldung beim Speichern von Rechnungen
+
+Hallo Team
+
+Beim Versuch, eine Rechnung zu speichern, erscheint bei mehreren Nutzern eine 500er-Fehlermeldung. Dies tritt vor allem bei der Auswahl der Zahlungsmethode „Kreditkarte“ auf. In der Testumgebung scheint alles zu funktionieren.
+
+Könnt ihr das bitte prüfen?
+
+Beste Grüsse  
+Hans Mustermann
+Sales Ops
