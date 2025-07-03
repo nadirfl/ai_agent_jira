@@ -1,0 +1,2 @@
+Feature-Idee: Dark Mode
+Einige Kunden wünschen sich einen dunklen Modus in der Web-App.

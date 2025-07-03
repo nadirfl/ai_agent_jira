@@ -7,15 +7,36 @@ import re, json
 
 def run(text: str) -> dict:
     prompt = f"""
-Extrahiere aus folgendem Text die Felder für ein JIRA-Ticket im JSON-Format:
+Bitte formuliere eine Jira-Story aus folgendem Text und verwende dieses JSON Format:
 
-- title
-- description
+--- FORMAT START ---
+**Titel**: <prägnanter Titel>
 
-Text:
+**Beschreibung**:
+Als <Rolle>
+möchte ich <Funktion>
+damit ich <Nutzen>.
+
+**Akzeptanzkriterien**:
+- [ ] ...
+
+**Priorität**: Hoch / Mittel / Niedrig
+--- FORMAT ENDE ---
+
+--- INPUT START ---
+Hier ist der Inputtext:
 \"\"\"
 {text}
 \"\"\"
+--- INPUT ENDE ---
+
+Verwende folgendes Format für das JSON:
+--- JSON FORMAT START ---
+{{
+  "title": "...",
+  "description": "...",
+}}
+--- JSON FORMAT ENDE ---
 
 Gib ausschliesslich nur ein valides JSON-Objekt zurück, kein Markdown oder Kommentar. Die Felder sollen in Deutsch sein.
 """
