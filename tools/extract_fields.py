@@ -41,6 +41,9 @@ Verwende folgendes Format für das JSON:
 Gib ausschliesslich nur ein valides JSON-Objekt zurück, kein Markdown oder Kommentar. Die Felder sollen in Deutsch sein.
 """
     raw = ask_ollama(prompt)
-    raw = re.sub(r"^```json", "", raw, flags=re.I).strip()
-    raw = re.sub(r"```$", "", raw).strip()
-    return json.loads(raw)
+    try:
+        raw = re.sub(r"^```json", "", raw, flags=re.I).strip()
+        raw = re.sub(r"```$", "", raw).strip()
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        raise ValueError("LLM-Ausgabe war kein gültiges JSON")

@@ -12,6 +12,7 @@ with open(config_path, "r", encoding="utf-8") as f:
 
 def run(fields: dict, ticket_type) -> tuple[bool, list[str]]:
     errors = []
+    missing = []
 
     rules = RULES.get(ticket_type, {}) 
 
@@ -22,6 +23,7 @@ def run(fields: dict, ticket_type) -> tuple[bool, list[str]]:
     for key in required:
         if not fields.get(key):
             errors.append(f"Pflichtfeld '{key}' fehlt.")
+            missing.append(key)
 
     for key, length in min_length.items():
         if key in fields and len(str(fields[key])) < length:
@@ -29,4 +31,4 @@ def run(fields: dict, ticket_type) -> tuple[bool, list[str]]:
     
     # TODO: more checks
 
-    return len(errors) == 0, errors
+    return len(errors) == 0, errors, missing

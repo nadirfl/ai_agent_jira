@@ -26,27 +26,52 @@ for file in os.listdir(input_dir):
 
         fields = extract(text)
 
-        print("Prüfe extrahierte Daten...")
-        valid, errors = validate(fields, ticket_type)
+        max_attempts = 3
+        attempts = 0
+        
+        while attempts < max_attempts:
+            attempts += 1
 
-        if not valid:
-            print("Ticket unvollständig oder ungültig:")
-            for err in errors:
-                print(" -", err)
-                # TODO: notify user
-        else:
-            print("\n Vorgeschlagene Story:")
-            print(f" - Typ: {ticket_type}")
-            print(f" - Titel: {fields.get('title')}")
-            print(f" - Beschreibung: {fields.get('description')}")
-            
-            feedback = input("\nMöchtest du dieses Ticket erstellen? (j/n): ").strip().lower()
-            if feedback == "j":
-                print(f"Erstelle Ticket mit Titel: {fields['title']}")
-                result = create(fields, ticket_type)
-                ticket_key = result.get("key", "DEV-???")
+            print("Prüfe extrahierte Daten...")
+            valid, errors, missing_fields = validate(fields, ticket_type)
 
-                message = confirm(fields, ticket_type, ticket_key)
-                print(message)
+            if not valid:
+                print("Ticket unvollständig oder ungültig:")
+                for err in errors:
+                    print(" -", err)
+                    # TODO: notify user
+                
+                for field in missing_fields:
+                    action = input("Möchtest du für '{field}' etwas eingeben (e) oder generieren lassen (g)?").strip().lower()
+
+                    if action == "e":
+                        user_value = input(f"Bitte gebe den Wert für '{field}' ein:\n>")
+                        fields[field] = user_value
+                    elif action == "g":
+                        from llm import ask_ollama
+                        suggestion = ask_ollama(f"Bitte generiere einen sinnvollen Wert für das Feld '{field}' basierend auf dem Kontext:\n{text}")
+                        fields[field] = suggestion.strip()
+                    else:
+                        print("🔕 Feld bleibt leer.")
             else:
-                print("Ticket wurde verworfen")
+                break
+        
+        if not valid:
+            print("Maximalanzahl an Korrekturversuchen erreicht - Ticket wird nicht erstellt.")
+            continue
+
+        print("\n Vorgeschlagene Story:")
+        print(f" - Typ: {ticket_type}")
+        print(f" - Titel: {fields.get('title')}")
+        print(f" - Beschreibung: {fields.get('description')}")
+        
+        feedback = input("\nMöchtest du dieses Ticket erstellen? (j/n): ").strip().lower()
+        if feedback == "j":
+            print(f"Erstelle Ticket mit Titel: {fields['title']}")
+            result = create(fields, ticket_type)
+            ticket_key = result.get("key", "DEV-???")
+
+            message = confirm(fields, ticket_type, ticket_key)
+            print(message)
+        else:
+            print("Ticket wurde verworfen")
