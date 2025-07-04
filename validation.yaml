@@ -1,0 +1,17 @@
+default:
+  required_fields:
+    - title
+    - description
+  min_length:
+    title: 10
+    description: 20
+
+Bug:
+  required_fields:
+    - title
+    - description
+
+Story:
+  required_fields:
+    - title
+    - description

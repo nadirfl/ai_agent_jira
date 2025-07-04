@@ -27,7 +27,7 @@ for file in os.listdir(input_dir):
         fields = extract(text)
 
         print("Prüfe extrahierte Daten...")
-        valid, errors = validate(fields)
+        valid, errors = validate(fields, ticket_type)
 
         if not valid:
             print("Ticket unvollständig oder ungültig:")
