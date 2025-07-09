@@ -1,5 +1,6 @@
 import os
 from tool_manager import load_tools
+from utils.fallback_handler import handle_fallback
 
 tools = load_tools("JIRA")
 
@@ -52,12 +53,13 @@ for file in os.listdir(input_dir):
                         suggestion = ask_ollama(f"Bitte generiere einen sinnvollen Wert für das Feld '{field}' basierend auf dem Kontext:\n{text}")
                         fields[field] = suggestion.strip()
                     else:
-                        print("🔕 Feld bleibt leer.")
+                        print("Feld bleibt leer.")
             else:
                 break
         
         if not valid:
             print("Maximalanzahl an Korrekturversuchen erreicht - Ticket wird nicht erstellt.")
+            handle_fallback(path, reason="Maximale Korrekturversuche erreicht")
             continue
 
         print("\n Vorgeschlagene Story:")
@@ -75,3 +77,4 @@ for file in os.listdir(input_dir):
             print(message)
         else:
             print("Ticket wurde verworfen")
+
